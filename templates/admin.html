@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة إدارة حدائق العلوم - د. غالب</title>
+
+    <!-- مكتبة الرسوم البيانية -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* الأساسيات */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f7f6; margin: 0; padding: 20px; }
+
+        /* الهيدر */
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white; padding: 20px; border-radius: 15px;
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .logo { width: 80px; background: white; padding: 5px; border-radius: 10px; }
+        .btn-logout {
+            background: #ff4757; color: white; padding: 10px 20px; border-radius: 12px;
+            text-decoration: none; font-weight: bold; font-size: 14px;
+            box-shadow: 0 4px 10px rgba(255, 71, 87, 0.3); transition: 0.3s;
+        }
+        .btn-logout:hover { background: #ff6b81; transform: scale(1.05); }
+
+        /* بطاقات الإحصائيات والفرز */
+        .stats-bar { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
+        .stat-card {
+            background: white; padding: 20px; flex: 1; min-width: 150px;
+            border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            text-align: center; border-bottom: 5px solid #2a5298;
+            cursor: pointer; transition: 0.3s;
+        }
+        .stat-card:hover { transform: translateY(-5px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
+        .stat-card h3 { margin: 0; color: #555; font-size: 16px; }
+        .stat-card p { font-size: 28px; font-weight: bold; margin: 5px 0; color: #1e3c72; }
+        .active-filter { border-bottom: 5px solid #e94560 !important; background-color: #f0f8ff; }
+
+        /* قسم الرسم البياني */
+        .chart-container {
+            background: white; padding: 25px; border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 30px;
+            display: flex; align-items: center; justify-content: space-around; flex-wrap: wrap;
+        }
+
+        /* الجدول */
+        table { width: 100%; background: white; border-collapse: collapse; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        th { background: #f8f9fa; padding: 15px; text-align: right; color: #333; border-bottom: 2px solid #eee; }
+        td { padding: 15px; border-bottom: 1px solid #eee; vertical-align: top; }
+        tr:hover { background: #f1f4f9; }
+
+        /* أزرار الإجراءات */
+        .btn-action { padding: 7px 15px; border-radius: 8px; text-decoration: none; color: white; font-size: 13px; font-weight: bold; display: inline-block; margin: 2px; transition: 0.2s; }
+        .btn-wa { background: #25D366; } /* WhatsApp */
+        .btn-vi { background: #7360f2; } /* Viber */
+        .btn-tg { background: #0088cc; } /* Telegram */
+        .btn-ph { background: #34495e; } /* Phone */
+        .btn-em { background: #f39c12; } /* Email */
+        .btn-del { background: #e74c3c; }
+        .btn-action:hover { opacity: 0.8; transform: scale(1.05); }
+
+        /* تاغات المسارات */
+        .tag { padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; color: white; text-transform: uppercase; }
+        .tag-idea { background: #11998e; }
+        .tag-problem { background: #f0932b; }
+        .tag-seminar { background: #007bff; }
+        .tag-real_project { background: #686de0; }
+
+        .desc-box { max-width: 300px; font-size: 13px; color: #666; line-height: 1.4; }
+    </style>
+</head>
+<body>
+
+    <!-- الهيدر -->
+    <div class="header">
+        <div>
+            <h1>لوحة الإدارة المركزية</h1>
+            <p>قسم حدائق العلوم والتكنولوجيا - جامعة الكتاب</p>
+        </div>
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <!-- الزر الجديد لتحميل البيانات -->
+            <a href="/export_data" style="background: #27ae60; color: white; padding: 10px 20px; border-radius: 12px; text-decoration: none; font-weight: bold; font-size: 14px; box-shadow: 0 4px 10px rgba(39, 174, 96, 0.3); transition: 0.3s;">تحميل التقرير (Excel) 📥</a>
+
+            <a href="/admin_logout" class="btn-logout">تسجيل الخروج</a>
+            <img src="/static/kitab_logo.png" class="logo">
+        </div>
+    </div>
+
+    <!-- بطاقات العد والفرز -->
+    <div class="stats-bar">
+        <div class="stat-card active-filter" onclick="filterTable('all')" id="card-all">
+            <h3>إجمالي المسجلين</h3>
+            <p>{{ stats.total }}</p>
+        </div>
+        <div class="stat-card" onclick="filterTable('idea')" id="card-idea">
+            <h3>أفكار ابتكارية</h3>
+            <p>{{ stats.ideas }}</p>
+        </div>
+        <div class="stat-card" onclick="filterTable('problem')" id="card-problem">
+            <h3>مشكلات تقنية</h3>
+            <p>{{ stats.problems }}</p>
+        </div>
+        <div class="stat-card" onclick="filterTable('seminar')" id="card-seminar">
+            <h3>حضور سمينار</h3>
+            <p>{{ stats.seminar }}</p>
+        </div>
+        <div class="stat-card" onclick="filterTable('real_project')" id="card-project">
+            <h3>مشاريع الحاضنة</h3>
+            <p>{{ entries|selectattr('sector', 'equalto', 'real_project')|list|length }}</p>
+        </div>
+    </div>
+
+    <!-- قسم الرسم البياني -->
+    <div class="chart-container">
+        <div style="width: 300px;">
+            <canvas id="myChart"></canvas>
+        </div>
+        <div style="text-align: center; max-width: 500px;">
+            <h2 style="color: #1e3c72; border-bottom: 2px solid #eee; padding-bottom: 10px;">التحليل الإحصائي للمبتكرين</h2>
+            <p style="font-size: 16px; color: #666; line-height: 1.8;">
+                يوضح هذا الرسم البياني التوزيع النسبي للمشاركات، مما يساعد في تحديد الأولويات الاستراتيجية ودعم اتخاذ القرار داخل القسم.
+            </p>
+            <div style="font-size: 40px;">📊</div>
+        </div>
+    </div>
+
+    <!-- جدول البيانات -->
+    <table>
+        <thead>
+            <tr>
+                <th>التاريخ</th>
+                <th>المبتكر</th>
+                <th>المسار</th>
+                <th>التصنيف/المرحلة</th>
+                <th>التفاصيل</th>
+                <th>التواصل والإجراء</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in entries %}
+            <tr class="entry-row" data-sector="{{ entry.sector }}">
+                <td>{{ entry.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td><b>{{ entry.name }}</b><br><small>{{ entry.role }}</small></td>
+                <td><span class="tag tag-{{ entry.sector }}">{{ entry.sector }}</span></td>
+                <td>{{ entry.innov_type }}<br><small>{{ entry.project_stage }}</small></td>
+                <td><div class="desc-box">{{ entry.description }}</div></td>
+                <td>
+                    {% if entry.contact_method == 'WhatsApp' %}
+                        <a href="https://wa.me/{{ entry.contact_value }}" class="btn-action btn-wa" target="_blank">واتساب</a>
+                    {% elif entry.contact_method == 'Viber' %}
+                        <a href="viber://chat?number={{ entry.contact_value }}" class="btn-action btn-vi">فايبر</a>
+                    {% elif entry.contact_method == 'Telegram' %}
+                        <a href="https://t.me/{{ entry.contact_value }}" class="btn-action btn-tg" target="_blank">تليجرام</a>
+                    {% elif entry.contact_method == 'Phone' %}
+                        <a href="tel:{{ entry.contact_value }}" class="btn-action btn-ph">اتصال</a>
+                    {% elif entry.contact_method == 'Email' %}
+                        <a href="mailto:{{ entry.contact_value }}" class="btn-action btn-em">إيميل</a>
+                    {% endif %}
+                    <a href="/delete/{{ entry.id }}" class="btn-action btn-del" onclick="return confirm('هل أنت متأكد من الحذف؟')">حذف</a>
+                </td>
+            </tr>
+            {% endfor %}
+        <div style="position: fixed; bottom: 10px; left: 10px; opacity: 0.15; transition: 0.5s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.15'">
+            <a href="/admin_login" style="color: white; text-decoration: none; font-size: 11px; font-family: sans-serif;">Admin Access : The page was builded by Dr.Ghalib Hawrami</a>
+
+        </div>
+        </tbody>
+    </table>
+
+    <script>
+        // 1. وظيفة الفرز الذكي
+        function filterTable(sector) {
+            const rows = document.querySelectorAll('.entry-row');
+            const cards = document.querySelectorAll('.stat-card');
+
+            cards.forEach(card => card.classList.remove('active-filter'));
+            const targetId = sector === 'real_project' ? 'card-project' : 'card-' + sector;
+            document.getElementById(targetId).classList.add('active-filter');
+
+            rows.forEach(row => {
+                if (sector === 'all') {
+                    row.style.display = '';
+                } else {
+                    row.style.display = (row.getAttribute('data-sector') === sector) ? '' : 'none';
+                }
+            });
+        }
+
+        // 2. تشغيل الرسم البياني (Doughnut Style)
+        const ctx = document.getElementById('myChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['أفكار', 'مشكلات', 'سمينار', 'مشاريع'],
+                datasets: [{
+                    data: [
+                        {{ stats.ideas }},
+                        {{ stats.problems }},
+                        {{ stats.seminar }},
+                        {{ entries|selectattr('sector', 'equalto', 'real_project')|list|length }}
+                    ],
+                    backgroundColor: ['#4834d4', '#f0932b', '#22a6b3', '#686de0'],
+                    hoverOffset: 15,
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom', labels: { font: { size: 12 } } }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

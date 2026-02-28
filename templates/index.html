@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بوابة الابتكار - جامعة الكتاب</title>
+    <style>
+        /* تنسيق القسم العلوي ليكون منقسماً */
+.top-header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 60%;
+    max-width: 1200px;
+    margin: 0 auto 30px auto;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    border-radius: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* تنسيق صندوق الباركود على اليسار */
+.qr-side-box {
+    background: white;
+    padding: 15px;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    text-align: center;
+    border: 3px solid #686de0;
+    margin-right: 40px; /* مسافة بينه وبين النص */
+    animation: fadeInScale 1s ease-out;
+}
+
+.qr-side-box img {
+    width: 160px; /* حجم مناسب للباركود في الأعلى */
+    height: 160px;
+}
+
+.qr-mini-text {
+    color: #4834d4;
+    font-weight: bold;
+    font-size: 14px;
+    margin-top: 8px;
+}
+
+/* الحفاظ على تنسيق النص المحفز كما هو */
+.shimmer-text {
+    font-size: 38px;
+    font-weight: 900;
+    background: linear-gradient(to right, #ffffff, #be2edd, #ffffff);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shine 3s linear infinite;
+}
+
+/* حركة ظهور الباركود */
+@keyframes fadeInScale {
+    from { opacity: 0; transform: scale(0.5); }
+    to { opacity: 1; transform: scale(1); }
+}
+ /* تصميم منطقة التحفيز المبهرة */
+.motivation-hero {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 30px;
+    margin-bottom: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    animation: fadeInScale 1.2s ease-out;
+}
+
+.shimmer-text {
+    font-size: 42px; /* خط ضخم */
+    font-weight: 900;
+    background: linear-gradient(to right, #4834d4, #be2edd, #4834d4);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shine 3s linear infinite;
+    margin-bottom: 15px;
+}
+
+.quote-box {
+    font-size: 20px;
+    color: #444;
+    font-style: italic;
+    line-height: 1.6;
+    margin: 15px 0;
+    position: relative;
+    padding: 0 20px;
+}
+
+.quote-mark {
+    font-size: 50px;
+    color: #686de0;
+    opacity: 0.3;
+    font-family: serif;
+}
+
+.action-banner {
+    font-size: 24px;
+    font-weight: bold;
+    color: #1e3c72;
+    background: #f9f9f9;
+    display: inline-block;
+    padding: 10px 25px;
+    border-radius: 50px;
+    margin-top: 15px;
+    border: 2px dashed #686de0;
+}
+
+.highlight {
+    color: #be2edd;
+    text-shadow: 0 0 10px rgba(190, 46, 221, 0.3);
+}
+
+/* الحركات الحية */
+@keyframes shine {
+    to { background-position: 200% center; }
+}
+
+@keyframes fadeInScale {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* حركة الزر لجعل المستخدم يتشجع للضغط */
+button {
+    font-size: 22px !important;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+        body { font-family: 'Segoe UI'; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; margin: 0; padding: 20px; min-height: 100vh; }
+        .card { background: rgba(255, 255, 255, 0.95); color: #333; padding: 30px; border-radius: 25px; max-width: 450px; margin: auto; box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
+        .logo { width: 140px; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.1)); }
+        h2 { color: #4834d4; margin-top: 10px; }
+        input, select { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 12px; transition: 0.3s; }
+        input:focus { border-color: #667eea; outline: none; }
+        button { background: linear-gradient(to right, #4834d4, #686de0); color: white; padding: 15px; width: 100%; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 18px; margin-top: 20px; transition: 0.3s; }
+        button:hover { transform: scale(1.03); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+    </style>
+</head>
+
+<!-- رابط دخول المدير: مخفي جداً في الزاوية اليسرى بالأسفل -->
+<div style="position: fixed; bottom: 10px; left: 10px; opacity: 0.15; transition: 0.5s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.15'">
+    <a href="/admin_login" style="color: white; text-decoration: none; font-size: 11px; font-family: sans-serif;">Admin Access : The page was builded by Dr.Ghalib Hawrami</a>
+
+</div>
+<body>
+<div style="margin-bottom: 25px; border-bottom: 1px solid #eee; padding-bottom: 20px;">
+<!-- منطقة التحفيز الخارقة -->
+<!-- منطقة الهيدر: باركود على اليسار ونص محفز على اليمين -->
+<div class="top-header-section">
+
+<!--    &lt;!&ndash; الجانب الأيسر: الباركود الذكي &ndash;&gt;-->
+<!--    <div class="qr-side-box">-->
+<!--        <img src="/static/current_gateway_qr.png" alt="QR Code">-->
+<!--        <div class="qr-mini-text">SCAN TO JOIN 📱</div>-->
+<!--    </div>-->
+
+    <!-- الجانب الأيمن: النص المحفز (الذي ظهر في صورتك) -->
+    <div class="motivation-hero" style="text-align: right; flex: 1;">
+        <div class="shimmer-text">إبداعك.. هو محركنا القادم 🚀</div>
+
+        <div class="quote-box">
+            <span class="quote-mark">"</span>
+            الأفكار العظيمة لا تبني العالم.. الأفكار التي "تنفذ" هي من تفعل ذلك.
+            <span class="quote-mark">"</span>
+        </div>
+
+        <div class="action-banner">
+            سجل بياناتك الآن.. ودع <span class="highlight">"العمل يتكلم"</span> !
+        </div>
+    </div>
+</div>
+</div>
+</div>
+    <div class="card">
+        <center><img src="/static/kitab_logo.png" class="logo"></center>
+        <center><h2>حدائق العلوم والتكنولوجيا</h2><p>جامعة الكتاب - منصة التحول الرقمي</p></center>
+        <form action="/submit_data" method="POST">
+            <input type="text" name="name" placeholder="الاسم الكامل" required>
+            <select name="role">
+                <option value="طالب">أنا طالب</option><option value="تدريسي">أنا تدريسي</option><option value="شركة">مستثمر / شركة</option>
+            </select>
+            <select name="sector">
+                <option value="idea">تقديم فكرة ابتكارية</option><option value="problem">طرح مشكلة تقنية</option>
+                <option value="real_project">الدخول للمشاريع (5555)</option><option value="seminar">السمينار الجاري (5050)</option>
+            </select>
+            <p style="font-size: 14px; color: #666; margin-bottom: 0;">وسيلة التواصل المفضلة:</p>
+            <div style="display: flex; gap: 5px;">
+                <select name="method" style="flex: 1;"><option value="WhatsApp">WhatsApp</option><option value="Viber">Viber</option><option value="Telegram">Telegram</option><option value="Phone">اتصال هاتفي مباشر</option></select>
+                <input type="text" name="value" placeholder="الرقم" style="flex: 2;"required>
+            </div>
+            <button type="submit">دخول وتوجيه ذكي 🚀</button>
+        </form>
+    </div>
+</body>
+</html>

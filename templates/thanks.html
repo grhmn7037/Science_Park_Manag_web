@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>شكراً لك</title>
+    <style>
+        body { font-family: 'Segoe UI'; background: #0f0c29; background: linear-gradient(to right, #24243e, #302b63, #0f0c29); color: white; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .success-card { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); padding: 50px; border-radius: 40px; text-align: center; border: 1px solid rgba(255,255,255,0.2); }
+        .logo { width: 180px; margin-bottom: 20px; }
+        h1 { font-size: 32px; color: #00d2ff; }
+        p { font-size: 18px; color: #ccc; }
+        .btn { display: inline-block; margin-top: 20px; color: #00d2ff; text-decoration: none; border: 1px solid #00d2ff; padding: 10px 20px; border-radius: 20px; }
+    </style>
+</head>
+<body>
+    <div class="success-card">
+        <img src="/static/kitab_logo.png" class="logo">
+        <h1>تمت العملية بنجاح!</h1>
+        <p>شكراً لك د. {{ name }}، بياناتك الآن بأمان في أرشيف القسم الرقمي.</p>
+        <a href="/" class="btn">العودة للرئيسية</a>
+    </div>
+</body>
+</html>

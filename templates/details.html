@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحليل الابتكار</title>
+    <style>
+        body { font-family: 'Segoe UI'; background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; min-height: 100vh; padding: 20px; }
+        .container { background: white; color: #333; max-width: 500px; margin: auto; padding: 30px; border-radius: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+        .logo { width: 100px; }
+        label { font-weight: bold; color: #11998e; }
+        select, textarea { width: 100%; padding: 12px; margin: 10px 0; border-radius: 15px; border: 2px solid #eee; box-sizing: border-box; }
+        button { background: #11998e; color: white; padding: 15px; width: 100%; border: none; border-radius: 15px; font-weight: bold; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <center><img src="/static/kitab_logo.png" class="logo"></center>
+        <h3>تحليل ملف ({{ sector }})</h3>
+        <form action="/finalize" method="POST">
+            <label>تصنيف الابتكار:</label>
+            <select name="innov_type"><option value="تقني">تقني</option><option value="طبي">طبي</option><option value="إداري">إداري</option></select>
+            <label>المرحلة الحالية:</label>
+            <select name="stage"><option value="فكرة">فكرة</option><option value="نموذج">نموذج أولي</option><option value="جاهز">منتج جاهز</option></select>
+            <label>وصف الفكرة:</label>
+            <textarea name="desc" rows="5" placeholder="اشرح لنا فكرتك بوضوح..."required></textarea>
+
+            <button type="submit">إتمام الأرشفة الرسمية ✅</button>
+            <div style="position: fixed; bottom: 10px; left: 10px; opacity: 0.15; transition: 0.5s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.15'">
+                <a href="/admin_login" style="color: white; text-decoration: none; font-size: 11px; font-family: sans-serif;">Admin Access : The page was builded by Dr.Ghalib Hawrami</a>
+
+            </div>
+        </form>
+    </div>
+</body>
+</html>
