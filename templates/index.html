@@ -143,22 +143,16 @@ button {
     </style>
 </head>
 
-<!-- رابط دخول المدير: مخفي جداً في الزاوية اليسرى بالأسفل -->
-<div style="position: fixed; bottom: 10px; left: 10px; opacity: 0.15; transition: 0.5s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.15'">
-    <a href="/admin_login" style="color: white; text-decoration: none; font-size: 11px; font-family: sans-serif;">Admin Access : The page was builded by Dr.Ghalib Hawrami</a>
 
-</div>
+
+<!--</div>-->
 <body>
 <div style="margin-bottom: 25px; border-bottom: 1px solid #eee; padding-bottom: 20px;">
 <!-- منطقة التحفيز الخارقة -->
 <!-- منطقة الهيدر: باركود على اليسار ونص محفز على اليمين -->
 <div class="top-header-section">
 
-<!--    &lt;!&ndash; الجانب الأيسر: الباركود الذكي &ndash;&gt;-->
-<!--    <div class="qr-side-box">-->
-<!--        <img src="/static/current_gateway_qr.png" alt="QR Code">-->
-<!--        <div class="qr-mini-text">SCAN TO JOIN 📱</div>-->
-<!--    </div>-->
+
 
     <!-- الجانب الأيمن: النص المحفز (الذي ظهر في صورتك) -->
     <div class="motivation-hero" style="text-align: right; flex: 1;">
@@ -182,17 +176,31 @@ button {
         <center><h2>حدائق العلوم والتكنولوجيا</h2><p>جامعة الكتاب - منصة التحول الرقمي</p></center>
         <form action="/submit_data" method="POST">
             <input type="text" name="name" placeholder="الاسم الكامل" required>
+
             <select name="role">
-                <option value="طالب">أنا طالب</option><option value="تدريسي">أنا تدريسي</option><option value="شركة">مستثمر / شركة</option>
+                <option value="طالب">أنا طالب</option>
+                <option value="تدريسي">أنا تدريسي</option>
+                <option value="شركة">مستثمر / شركة</option>
+                <option value="مواطن">مواطن من المجتمع</option>
             </select>
+
             <select name="sector">
-                <option value="idea">تقديم فكرة ابتكارية</option><option value="problem">طرح مشكلة تقنية</option>
-                <option value="real_project">الدخول للمشاريع (5555)</option><option value="seminar">السمينار الجاري (5050)</option>
+                <option value="idea">تقديم فكرة ابتكارية</option>
+                <option value="problem">طرح مشكلة تقنية</option>
+                <option value="real_project">مشروع جاهز للتنفيذ</option>
+                <option value="seminar">ورشة عمل (Workshop)</option>
+                <option value="seminar">سمينار علمي</option>
             </select>
+
             <p style="font-size: 14px; color: #666; margin-bottom: 0;">وسيلة التواصل المفضلة:</p>
             <div style="display: flex; gap: 5px;">
-                <select name="method" style="flex: 1;"><option value="WhatsApp">WhatsApp</option><option value="Viber">Viber</option><option value="Telegram">Telegram</option><option value="Phone">اتصال هاتفي مباشر</option></select>
-                <input type="text" name="value" placeholder="الرقم" style="flex: 2;"required>
+                <select name="method" style="flex: 1;">
+                    <option value="WhatsApp">WhatsApp</option>
+                    <option value="Viber">Viber</option>
+                    <option value="Telegram">Telegram</option>
+                    <option value="Phone">اتصال هاتفي</option>
+                </select>
+                <input type="text" name="value" placeholder="الرقم" style="flex: 2;" required>
             </div>
             <button type="submit">دخول وتوجيه ذكي 🚀</button>
         </form>
