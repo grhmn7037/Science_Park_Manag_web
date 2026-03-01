@@ -105,12 +105,12 @@
             <p>{{ stats.problems }}</p>
         </div>
         <div class="stat-card" onclick="filterTable('seminar')" id="card-seminar">
-            <h3>حضور سمينار</h3>
+            <h3>حضور سمينار/ورشة</h3>
             <p>{{ stats.seminar }}</p>
         </div>
         <div class="stat-card" onclick="filterTable('real_project')" id="card-project">
             <h3>مشاريع الحاضنة</h3>
-            <p>{{ entries|selectattr('sector', 'equalto', 'real_project')|list|length }}</p>
+            <p>{{ stats.projects }}</p> <!-- التعديل هنا -->
         </div>
     </div>
 
