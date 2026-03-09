@@ -16,7 +16,7 @@ app.config.update(
 
 # هاش مشفر لكلمة السر "1234" - لا يمكن فكه حتى لو تمت رؤيته
 ADMIN_USERNAME = "ghalib"
-ADMIN_PASSWORD_HASH = generate_password_hash("7373Aa*+")
+ADMIN_PASSWORD_HASH = generate_password_hash("32768:8:1$tlk3jzFdLVU9P1hB$ee963a727beedec10de2c0619313cb89113b50884bc00c0b6d5f0d025efa9ca2b6955bceb79980c4385296f64dd256a6c81715705e68eaee6cde0b3c477121a4")
 
 # إعداد قاعدة البيانات
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///science_park_final.db'
@@ -182,4 +182,5 @@ def admin_logout():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5002, debug=True)
+
 
