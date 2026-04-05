@@ -4,6 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
 import os, socket, csv, io
 
+
 app = Flask(__name__)
 
 # --- إعدادات الأمان الاحترافية ---
@@ -35,6 +36,7 @@ class Entry(db.Model):
     project_stage = db.Column(db.String(100))
     description = db.Column(db.Text)
     timestamp = db.Column(db.DateTime, default=db.func.current_timestamp())
+    is_approved = db.Column(db.Boolean, default=False)
 
 
 with app.app_context():
@@ -139,7 +141,8 @@ def admin_portal():
             'ideas': len([e for e in entries if e.sector == 'idea']),
             'problems': len([e for e in entries if e.sector == 'problem']),
             'seminar': len([e for e in entries if e.sector == 'seminar']),
-            'projects': len([e for e in entries if e.sector == 'real_project']) # إضافة هذا السطر
+            'projects': len([e for e in entries if e.sector == 'real_project']),
+            'jobs': len([e for e in entries if e.sector == 'job']) #  إضافة هذا السطر
         }
         return render_template('admin.html', entries=entries, stats=stats)
     except Exception as e:
@@ -178,9 +181,22 @@ def export_data():
 def admin_logout():
     session.clear()
     return redirect(url_for('index'))
+# --- 3. إضافة مسار للموافقة على الطلبات (Approve Route) ---
+@app.route('/approve/<int:id>')
+@admin_required
+def approve_entry(id):
+    entry = Entry.query.get(id)
+    if entry:
+        entry.is_approved = True
+        db.session.commit()
+    return redirect(url_for('admin_portal'))
+# --- مسار سوق الوظائف العام (للكل) ---
+@app.route('/job_market')
+def job_market():
+    # جلب فقط "فرص العمل" التي تم "الموافقة عليها" من قبل د. غالب
+    approved_jobs = Entry.query.filter_by(sector='job', is_approved=True).order_by(Entry.timestamp.desc()).all()
+    return render_template('job_market.html', jobs=approved_jobs)
 
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5002, debug=True)
-
-
