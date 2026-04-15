@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحليل الطلب</title>
+    <style>
+        body { font-family: 'Segoe UI'; background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; min-height: 100vh; padding: 20px; }
+        .container { background: white; color: #333; max-width: 500px; margin: auto; padding: 30px; border-radius: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+        .logo { width: 100px; }
+        label { font-weight: bold; color: #11998e; display: block; margin-top: 15px; }
+        select, textarea, input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 15px; border: 2px solid #eee; box-sizing: border-box; }
+        button { background: #11998e; color: white; padding: 15px; width: 100%; border: none; border-radius: 15px; font-weight: bold; cursor: pointer; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <center><img src="/static/kitab_logo.png" class="logo"></center>
+        <h3>إكمال بيانات المسار:
+            {% if sector == 'job' %} (فرص العمل والكفاءات) {% else %} ({{ sector }}) {% endif %}
+        </h3>
+        <form action="/finalize" method="POST">
+            <label>{% if sector == 'job' %}نوع الطلب:{% else %}تصنيف الابتكار:{% endif %}</label>
+            <select name="innov_type">
+                {% if sector == 'job' %}
+                    <option value="صاحب مهارة">أنا صاحب مهارة (أبحث عن فرصة)</option>
+                    <option value="صاحب عمل">أنا صاحب عمل (أبحث عن كفاءة)</option>
+                {% else %}
+                    <option value="تقني">تقني</option><option value="طبي">طبي</option><option value="إداري">إداري</option>
+                {% endif %}
+            </select>
+
+            <label>{% if sector == 'job' %}التخصص / المهارة الدقيقة:{% else %}المرحلة الحالية:{% endif %}</label>
+            {% if sector == 'job' %}
+                <input type="text" name="stage" placeholder="مثلاً: ميكانيك، برمجة، صيانة..." required>
+            {% else %}
+                <select name="stage"><option value="فكرة">فكرة</option><option value="نموذج">نموذج أولي</option><option value="جاهز">منتج جاهز</option></select>
+            {% endif %}
+
+            <label>التفاصيل الإضافية:</label>
+            <textarea name="desc" rows="5" placeholder="اشرح طلبك أو مهارتك هنا..." required></textarea>
+
+            <button type="submit">إتمام الإرسال للمراجعة ✅</button>
+        </form>
+    </div>
+</body>
+</html>

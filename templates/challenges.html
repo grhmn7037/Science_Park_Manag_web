@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>تحديات الصناعة | جامعة الكتاب</title>
+    <style>
+        body { font-family: 'Segoe UI'; background: #f4f7f6; padding: 40px; }
+        .challenge-card { background: white; border-right: 10px solid #e74c3c; padding: 30px; border-radius: 20px; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .reward-badge { background: #f1c40f; padding: 5px 15px; border-radius: 50px; font-weight: bold; float: left; }
+    </style>
+</head>
+<!-- أضف هذا الزر فوق الـ Grid الخاص بالتحديات -->
+<div style="text-align: center; margin-bottom: 30px;">
+    <a href="/post_challenge" style="background: #e74c3c; color: white; padding: 15px 30px; border-radius: 50px; text-decoration: none; font-weight: bold; font-size: 18px; box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4); display: inline-block;">
+        📢 هل أنت شركة؟ انشر مشكلتك التقنية هنا
+    </a>
+</div>
+<body>
+    <center>
+        <h1>🎯 ركن التحديات الصناعية</h1>
+        <p>مشاكل واقعية من الميدان.. ننتظر حلولكم الابتكارية</p>
+    </center>
+
+    <div style="max-width: 900px; margin: auto;">
+        {% for c in challenges %}
+        <div class="challenge-card">
+            <span class="reward-badge">💰 المكافأة: {{ c.reward }}</span>
+            <h2 style="color: #c0392b;">{{ c.problem_title }}</h2>
+            <p><strong>الشركة المصدرة:</strong> {{ c.company_name }}</p>
+            <p>{{ c.problem_description }}</p>
+            <button onclick="location.href='/'" style="background:#1e3c72; color:white; border:none; padding:10px 20px; border-radius:10px; cursor:pointer;">أملك الحل.. سأقدم الآن 💡</button>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

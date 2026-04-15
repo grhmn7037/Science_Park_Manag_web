@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة إدارة ECHO - د. غالب</title>
+
+    <!-- مكتبة الرسوم البيانية -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* الأساسيات وتحسينات المظهر */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f7f6; margin: 0; padding: 20px; }
+
+        /* الهيدر */
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white; padding: 20px; border-radius: 15px;
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .logo { width: 80px; background: white; padding: 5px; border-radius: 10px; }
+
+        /* بطاقات الإحصائيات (الفلاتر) مع تأثير Mouseover */
+        .stats-bar { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+        .stat-card {
+            background: white; padding: 15px; flex: 1; min-width: 140px;
+            border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            text-align: center; border-bottom: 5px solid #2a5298;
+            cursor: pointer; transition: 0.3s;
+        }
+        .stat-card:hover { transform: translateY(-5px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); background-color: #f8f9ff; }
+        .stat-card h3 { margin: 0; color: #555; font-size: 14px; }
+        .stat-card p { font-size: 24px; font-weight: bold; margin: 5px 0; color: #1e3c72; }
+        .active-filter { border-bottom: 5px solid #e94560 !important; background-color: #f0f8ff !important; }
+
+        /* الجدول مع تأثير Mouseover على الصفوف */
+        table { width: 100%; background: white; border-collapse: collapse; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        th { background: #f8f9fa; padding: 15px; text-align: right; color: #333; border-bottom: 2px solid #eee; }
+        td { padding: 12px 15px; border-bottom: 1px solid #eee; vertical-align: middle; }
+        .entry-row:hover { background: #f1f4f9; } /* تأثير المرور على الصف */
+
+        /* تاغات المسارات بألوان الكود الأصلي */
+        .tag { padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; color: white; text-transform: uppercase; }
+        .tag-idea { background: #11998e; }
+        .tag-problem { background: #f0932b; }
+        .tag-seminar { background: #007bff; }
+        .tag-real_project { background: #686de0; }
+        .tag-job { background: #e84393; }
+
+        /* مدخلات ECHO الذكية */
+        .input-inline { width: 100%; border: none; border-bottom: 1px dashed #ccc; background: transparent; font-size: 12px; padding: 4px; transition: 0.3s; }
+        .input-inline:focus { border-bottom: 1px solid #1e3c72; outline: none; background: #fff; }
+
+        /* أزرار الإجراءات */
+        .btn-action { padding: 7px 15px; border-radius: 8px; text-decoration: none; color: white; font-size: 12px; font-weight: bold; display: inline-block; margin: 2px; transition: 0.2s; }
+        .btn-wa { background: #25D366; }
+        .btn-del { background: #e74c3c; }
+        .btn-action:hover { opacity: 0.8; transform: scale(1.05); }
+
+        #toast { visibility: hidden; position: fixed; bottom: 30px; left: 30px; background: #27ae60; color: white; padding: 15px 25px; border-radius: 10px; z-index: 100; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        #toast.show { visibility: visible; animation: fadein 0.5s; }
+        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
+    </style>
+</head>
+<body>
+
+<div id="toast">✅ تم تحديث بيانات النظام البيئي بنجاح</div>
+
+<!-- الهيدر -->
+<div class="header">
+    <div>
+        <h1>لوحة التحكم الاستراتيجية (ECHO)</h1>
+        <p>جامعة الكتاب - منصة التحول الرقمي</p>
+    </div>
+    <div style="display: flex; gap: 10px; align-items: center;">
+        <a href="/export_data" style="background: #27ae60; color: white; padding: 10px 20px; border-radius: 12px; text-decoration: none; font-weight: bold; font-size: 14px;">تحميل التقرير 📥</a>
+        <a href="/analytics" style="background: #9b59b6; color: white; padding: 10px 20px; border-radius: 12px; text-decoration: none; font-weight: bold; font-size: 14px;">📊 التحليل (KPIs)</a>
+        <a href="/admin_logout" style="background:#ff4757; color:white; padding:10px 20px; border-radius:12px; text-decoration:none; font-weight:bold; font-size:14px;">خروج</a>
+        <img src="/static/kitab_logo.png" class="logo">
+    </div>
+</div>
+
+<!-- بطاقات العد والفرز (الفلاتر التفاعلية) -->
+<div class="stats-bar">
+    <div class="stat-card active-filter" onclick="filterTable('all')" id="card-all">
+        <h3>إجمالي المسجلين</h3>
+        <p>{{ stats.total }}</p>
+    </div>
+    <div class="stat-card" onclick="filterTable('idea')" id="card-idea">
+        <h3>أفكار ابتكارية</h3>
+        <p>{{ stats.ideas }}</p>
+    </div>
+    <div class="stat-card" onclick="filterTable('problem')" id="card-problem">
+        <h3>مشكلات تقنية</h3>
+        <p>{{ stats.problems }}</p>
+    </div>
+    <div class="stat-card" onclick="filterTable('seminar')" id="card-seminar">
+        <h3>حضور ورشة/سمينار</h3>
+        <p>{{ stats.seminar }}</p>
+    </div>
+    <div class="stat-card" onclick="filterTable('real_project')" id="card-project">
+        <h3>مشاريع الحاضنة</h3>
+        <p>{{ stats.projects }}</p>
+    </div>
+    <div class="stat-card" onclick="filterTable('job')" id="card-job">
+        <h3>فرص العمل</h3>
+        <p>{{ stats.jobs }}</p>
+    </div>
+</div>
+
+<!-- الرسم البياني المتقدم -->
+<div style="background:white; padding:25px; border-radius:15px; margin-bottom:20px; display:flex; align-items:center; justify-content:space-around; flex-wrap:wrap; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+    <div style="width: 280px;"><canvas id="myChart"></canvas></div>
+    <div style="text-align: center; max-width: 450px;">
+        <h2 style="color: #1e3c72; border-bottom: 2px solid #eee; padding-bottom: 10px;">تحليل النظام البيئي 📊</h2>
+        <p style="color: #666; font-size: 14px; line-height: 1.6;">هذا الرسم يوضح التوزيع النسبي للمشاركات، مما يساعد د. غالب في اتخاذ القرارات الاستراتيجية لدعم المبتكرين في جامعة الكتاب.</p>
+    </div>
+</div>
+
+<!-- جدول البيانات مع خاصية الفلترة والـ ECHO -->
+<table>
+    <thead>
+        <tr>
+            <th>التاريخ</th>
+            <th>المبتكر</th>
+            <th>المسار</th>
+            <th>التقييم (10)</th>
+            <th>إدارة ECHO</th>
+            <th>الحالة</th>
+            <th>الإجراءات</th>
+        </tr>
+    </thead>
+    <tbody id="entries-table">
+        {% for entry in entries %}
+        <tr class="entry-row" data-sector="{{ entry.sector }}">
+            <td>{{ entry.timestamp.strftime('%Y-%m-%d') }}</td>
+            <td><b>{{ entry.name }}</b><br><small style="color:#888;">{{ entry.role }}</small></td>
+            <td><span class="tag tag-{{ entry.sector }}">{{ entry.sector }}</span></td>
+
+            <!-- تحديث التقييم AJAX -->
+            <td>
+                <input type="number" class="input-inline" value="{{ entry.score }}" min="0" max="10"
+                       onchange="updateField('{{ entry.id }}', 'score', this.value)" style="width:45px; text-align:center; font-weight:bold;">
+            </td>
+
+            <!-- إدارة الموجه والمسار AJAX -->
+            <td>
+                <div style="font-size:11px; min-width: 150px;">
+                    👤 الموجه: <input type="text" value="{{ entry.mentor_name }}" class="input-inline" onblur="updateField('{{ entry.id }}', 'mentor_name', this.value)"><br>
+                    🏢 المسار: <input type="text" value="{{ entry.incubation_path }}" class="input-inline" onblur="updateField('{{ entry.id }}', 'incubation_path', this.value)">
+                </div>
+            </td>
+
+            <!-- إدارة الحالة AJAX -->
+            <td>
+                <select class="input-inline" onchange="updateField('{{ entry.id }}', 'status', this.value)" style="background:#fff; cursor:pointer;">
+                    <option value="pending" {% if entry.status == 'pending' %}selected{% endif %}>⏳ انتظار</option>
+                    <option value="review" {% if entry.status == 'review' %}selected{% endif %}>🔍 تقييم</option>
+                    <option value="approved" {% if entry.status == 'approved' %}selected{% endif %}>✅ معتمد</option>
+                    <option value="incubated" {% if entry.status == 'incubated' %}selected{% endif %}>🚀 حاضنة</option>
+                </select>
+            </td>
+
+            <td>
+                <a href="https://wa.me/{{ entry.contact_value }}" class="btn-action btn-wa" target="_blank">واتساب</a>
+                <a href="/delete/{{ entry.id }}" class="btn-action btn-del" onclick="return confirm('هل أنت متأكد من حذف هذا السجل؟')">حذف</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- تذييل الصفحة -->
+<div style="margin-top:20px; text-align:center; opacity:0.3; font-size:11px;">
+    Admin Access: Designed for Al-Kitab University by Dr. Ghalib Hawrami
+</div>
+
+<script>
+    // 1. وظيفة الفرز الذكي (القديمة المدمجة)
+    function filterTable(sector) {
+        const rows = document.querySelectorAll('.entry-row');
+        const cards = document.querySelectorAll('.stat-card');
+
+        // تحديث مظهر البطاقة النشطة
+        cards.forEach(card => card.classList.remove('active-filter'));
+        const targetId = sector === 'real_project' ? 'card-project' : 'card-' + sector;
+        const targetCard = document.getElementById(targetId);
+        if(targetCard) targetCard.classList.add('active-filter');
+
+        // تنفيذ الفلترة على الصفوف
+        rows.forEach(row => {
+            if (sector === 'all') {
+                row.style.display = '';
+            } else {
+                row.style.display = (row.getAttribute('data-sector') === sector) ? '' : 'none';
+            }
+        });
+    }
+
+    // 2. وظيفة تحديث الحقول (ECHO AJAX)
+    function updateField(id, field, value) {
+        fetch(`/update_entry/${id}`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({[field]: value})
+        }).then(res => res.json()).then(data => {
+            if(data.success) {
+                let t = document.getElementById("toast");
+                t.className = "show";
+                setTimeout(() => t.className = "", 3000);
+            } else {
+                alert("خطأ في الاتصال بالسيرفر!");
+            }
+        });
+    }
+
+    // 3. الرسم البياني (Doughnut) مع كافة البيانات
+    const ctx = document.getElementById('myChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['أفكار', 'مشكلات', 'ورشات', 'مشاريع', 'وظائف'],
+            datasets: [{
+                data: [
+                    {{ stats.ideas }}, {{ stats.problems }}, {{ stats.seminar }}, {{ stats.projects }}, {{ stats.jobs }}
+                ],
+                backgroundColor: ['#11998e', '#f0932b', '#007bff', '#686de0', '#e84393'],
+                borderWidth: 0,
+                hoverOffset: 15
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'bottom', labels: { font: { size: 11 } } }
+            }
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سوق الكفاءات - حدائق العلوم</title>
+    <style>
+        body { font-family: 'Segoe UI'; background: #f0f2f5; margin: 0; padding: 20px; }
+        .market-header { text-align: center; padding: 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 20px; margin-bottom: 30px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .logo { width: 120px; background: white; padding: 10px; border-radius: 15px; margin-bottom: 15px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; max-width: 1200px; margin: auto; }
+        .job-card { background: white; border-radius: 20px; padding: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border-right: 8px solid #e84393; transition: 0.3s; }
+        .job-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .name { font-size: 20px; font-weight: bold; color: #1e3c72; margin-bottom: 5px; }
+        .skill { display: inline-block; background: #fce4ec; color: #e84393; padding: 5px 15px; border-radius: 10px; font-weight: bold; font-size: 14px; margin-bottom: 15px; }
+        .desc { color: #666; line-height: 1.6; font-size: 15px; margin-bottom: 20px; min-height: 60px; }
+        .btn-contact { display: block; text-align: center; background: #27ae60; color: white; padding: 12px; border-radius: 12px; text-decoration: none; font-weight: bold; transition: 0.3s; }
+        .btn-contact:hover { background: #2ecc71; }
+        .empty-msg { text-align: center; color: #888; grid-column: 1 / -1; padding: 50px; }
+    </style>
+</head>
+<body>
+    <div class="market-header">
+        <img src="/static/kitab_logo.png" class="logo">
+        <h1>سوق الكفاءات والفرص التقنية</h1>
+        <p>منصة الربط بين المبتكرين، أصحاب المهارات، والقطاع الصناعي</p>
+    </div>
+
+    <div class="grid">
+        {% for job in jobs %}
+        <div class="job-card">
+            <div class="name">{{ job.name }}</div>
+            <div style="color: #888; font-size: 13px; margin-bottom: 10px;">{{ job.role }}</div>
+            <div class="skill">{{ job.project_stage }}</div> <!-- التخصص -->
+            <div class="desc">{{ job.description }}</div>
+
+            {% if job.contact_method == 'WhatsApp' %}
+                <a href="https://wa.me/{{ job.contact_value }}" class="btn-contact" target="_blank">تواصل عبر واتساب 💬</a>
+            {% elif job.contact_method == 'Phone' %}
+                <a href="tel:{{ job.contact_value }}" class="btn-contact">اتصال هاتفي مباشر 📞</a>
+            {% else %}
+                <a href="#" class="btn-contact" style="background:#34495e;">تواصل عبر القسم 📧</a>
+            {% endif %}
+        </div>
+        {% else %}
+        <div class="empty-msg">
+            <h3>لا توجد فرص منشورة حالياً.. كن أول من يسجل مهاراته!</h3>
+        </div>
+        {% endfor %}
+    </div>
+
+    <center style="margin-top: 40px;">
+        <a href="/" style="color: #764ba2; text-decoration: none; font-weight: bold;">← العودة لتقديم طلب جديد</a>
+    </center>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>تتبع حالة الابتكار | جامعة الكتاب</title>
+    <style>
+        body { font-family: 'Segoe UI'; background: #0f0c29; background: linear-gradient(to bottom, #24243e, #302b63, #0f0c29); color: white; min-height: 100vh; display: flex; align-items: center; justify-content: center; margin: 0; }
+        .track-card { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(15px); padding: 40px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.2); width: 500px; text-align: center; }
+        input { width: 100%; padding: 12px; margin: 20px 0; border-radius: 12px; border: none; text-align: center; font-size: 18px; }
+        button { background: #f1c40f; color: #1e3c72; padding: 12px 30px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; width: 100%; }
+        .result-box { margin-top: 30px; padding: 20px; background: rgba(255,255,255,0.05); border-radius: 20px; text-align: right; border-right: 5px solid #f1c40f; }
+        .status-badge { background: #2ecc71; padding: 5px 15px; border-radius: 50px; font-size: 14px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="track-card">
+        <img src="/static/kitab_logo.png" width="80">
+        <h2>نظام تتبع الابتكارات الرقمي</h2>
+        <p>أدخل رقم الهاتف المستخدم عند التسجيل لمعرفة حالة طلبك</p>
+
+        <form method="POST">
+            <input type="text" name="phone" placeholder="أدخل رقم الهاتف (مثلاً: 0770...)" required>
+            <button type="submit">بحث عن حالة الطلب 🔍</button>
+        </form>
+
+        {% if result %}
+            <div class="result-box">
+                <p><strong>اسم المبتكر:</strong> {{ result.name }}</p>
+                <p><strong>نوع الابتكار:</strong> {{ result.innov_type }}</p>
+                <p><strong>الحالة الحالية:</strong>
+                    <span class="status-badge">
+                        {% if result.status == 'pending' %}⏳ قيد الانتظار
+                        {% elif result.status == 'review' %}🔍 قيد المراجعة العلمية
+                        {% elif result.status == 'approved' %}✅ تم الاعتماد الاستثماري
+                        {% elif result.status == 'incubated' %}🚀 في الحاضنة التكنولوجية
+                        {% endif %}
+                    </span>
+                </p>
+                <p><strong>الموجه الأكاديمي:</strong> {{ result.mentor_name or 'سيتم التعيين قريباً' }}</p>
+
+                {% if result.status in ['approved', 'incubated'] %}
+                    <a href="/project/{{ result.id }}" style="color: #00d2ff; text-decoration: none; font-weight: bold;">➡️ عرض ملف الابتكار العام</a>
+                {% endif %}
+            </div>
+        {% elif request.method == 'POST' %}
+            <p style="color: #ff4757; margin-top: 20px;">⚠️ لم يتم العثور على بيانات لهذا الرقم. تأكد من الرقم الصحيح.</p>
+        {% endif %}
+
+        <br><br>
+        <a href="/" style="color: #ccc; text-decoration: none; font-size: 14px;">← العودة للرئيسية</a>
+    </div>
+
+</body>
+</html>

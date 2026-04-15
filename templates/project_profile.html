@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ p.innov_type }} | نظام ECHO جامعة الكتاب</title>
+    <style>
+        :root { --primary: #1e3c72; --secondary: #2a5298; --accent: #f1c40f; --success: #27ae60; }
+        body { font-family: 'Segoe UI', Tahoma; background: #f0f2f5; margin: 0; display: flex; min-height: 100vh; }
+
+        /* الجانب الأيمن: تفاصيل الابتكار */
+        .main-content { flex: 1; padding: 40px; }
+        .content-card { background: white; padding: 40px; border-radius: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+
+        /* الجانب الأيسر: ركن النظام البيئي (The Ecosystem Sidebar) */
+        .ecosystem-sidebar {
+            width: 350px;
+            background: var(--primary);
+            color: white;
+            padding: 30px;
+            box-shadow: -5px 0 20px rgba(0,0,0,0.1);
+            border-right: 5px solid var(--accent);
+        }
+
+        .eco-section { background: rgba(255,255,255,0.1); padding: 20px; border-radius: 20px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); }
+        .eco-label { font-size: 12px; text-transform: uppercase; color: var(--accent); font-weight: bold; margin-bottom: 10px; display: block; }
+        .eco-value { font-size: 16px; font-weight: bold; }
+
+        /* شريط التقدم (Lifecycle) */
+        .progress-container { margin-top: 20px; }
+        .step { display: flex; align-items: center; margin-bottom: 15px; opacity: 0.5; }
+        .step.active { opacity: 1; color: var(--accent); }
+        .dot { width: 12px; height: 12px; background: white; border-radius: 50%; margin-left: 10px; }
+        .active .dot { background: var(--accent); box-shadow: 0 0 10px var(--accent); }
+
+        .btn-action { display: block; width: 100%; padding: 15px; background: var(--success); color: white; text-align: center; border-radius: 15px; text-decoration: none; font-weight: bold; margin-top: 20px; transition: 0.3s; }
+        .btn-action:hover { transform: scale(1.02); background: #2ecc71; }
+    </style>
+</head>
+<body>
+
+    <!-- الجزء الرئيسي (اليمين) -->
+    <div class="main-content">
+        <div class="content-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h1 style="color: var(--primary); margin: 0;">{{ p.innov_type }}</h1>
+                <div style="background: var(--accent); padding: 10px 20px; border-radius: 50px; font-weight: bold;">⭐ تقييم اللجنة: {{ p.score }}/10</div>
+            </div>
+            <p style="font-size: 14px; color: #888;">الرقم المرجعي للابتكار: #UK-2026-{{ p.id }}</p>
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 25px 0;">
+
+            <h3 style="color: var(--secondary);">وصف الحل الابتكاري:</h3>
+            <p style="font-size: 18px; line-height: 1.8; color: #444;">{{ p.description }}</p>
+
+            <div style="margin-top: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div style="background: #f9f9f9; padding: 20px; border-radius: 15px;">
+                    <strong>اسم المبتكر:</strong><br>{{ p.name }} ({{ p.role }})
+                </div>
+                <div style="background: #f9f9f9; padding: 20px; border-radius: 15px;">
+                    <strong>القطاع المستهدف:</strong><br>{{ p.sector }}
+                </div>
+            </div>
+            <!-- في ملف project_profile.html - ابحث عن مكان مناسب (مثلاً تحت الوصف) -->
+{% if p.status in ['approved', 'incubated'] %}
+    <div style="margin-top: 20px; background: #f1c40f; padding: 15px; border-radius: 15px; text-align: center;">
+        <h4 style="margin: 0; color: #1e3c72;">مبروك! شهادتك الرسمية جاهزة 📜</h4>
+        <a href="/certificate/{{ p.id }}" target="_blank" style="display: inline-block; margin-top: 10px; background: #1e3c72; color: white; padding: 10px 20px; border-radius: 10px; text-decoration: none; font-weight: bold;">
+            استلام وتحميل الشهادة المعتمدة
+        </a>
+    </div>
+{% endif %}
+        </div>
+    </div>
+
+    <!-- الجانب الأيسر (Ecosystem Sidebar) -->
+    <div class="ecosystem-sidebar">
+        <center><img src="/static/kitab_logo.png" width="100" style="background: white; padding: 10px; border-radius: 15px;"></center>
+        <h2 style="text-align: center; font-size: 20px; margin: 20px 0;">نظام ECHO للابتكار</h2>
+
+        <div class="eco-section">
+            <span class="eco-label">الموجه الأكاديمي (Mentor)</span>
+            <span class="eco-value">👤 {{ p.mentor_name or 'د. غالب حورامي (مؤقت)' }}</span>
+        </div>
+
+        <div class="eco-section">
+            <span class="eco-label">مسار الاحتضان (Incubation)</span>
+            <span class="eco-value">🏢 {{ p.incubation_path or 'الحديقة التكنولوجية' }}</span>
+        </div>
+
+        <div class="eco-section">
+            <span class="eco-label">الوضعية القانونية</span>
+            <span class="eco-value">⚖️ {{ p.legal_status or 'فحص الملكية الفكرية' }}</span>
+        </div>
+
+        <div class="progress-container">
+            <span class="eco-label">دورة حياة الابتكار (Life Cycle)</span>
+            <div class="step {% if p.status == 'pending' %}active{% endif %}"><div class="dot"></div> توثيق الفكرة</div>
+            <div class="step {% if p.status == 'review' %}active{% endif %}"><div class="dot"></div> التقييم العلمي</div>
+            <div class="step {% if p.status == 'approved' %}active{% endif %}"><div class="dot"></div> الاعتماد الاستثماري</div>
+            <div class="step {% if p.status == 'incubated' %}active{% endif %}"><div class="dot"></div> الاحتضان الفعلي</div>
+        </div>
+
+        <a href="https://wa.me/{{ p.contact_value }}" class="btn-action">طلب مقابلة المبتكر 💬</a>
+        <button onclick="window.print()" style="width:100%; background:none; border:1px solid rgba(255,255,255,0.3); color:white; padding:10px; margin-top:10px; border-radius:10px; cursor:pointer;">تحميل ملف الـ Ecosystem (PDF)</button>
+    </div>
+
+</body>
+</html>

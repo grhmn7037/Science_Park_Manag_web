@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>معرض الابتكار - جامعة الكتاب</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; margin: 0; padding: 0; }
+        .hero { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white; padding: 60px 20px; text-align: center; border-radius: 0 0 50px 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .logo { width: 120px; background: white; padding: 10px; border-radius: 20px; margin-bottom: 20px; }
+
+        .container { max-width: 1200px; margin: -40px auto 40px auto; padding: 0 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; }
+
+        /* تعديل البطاقة لتكون تفاعلية وقابلة للضغط */
+        .card {
+            background: white;
+            border-radius: 25px;
+            padding: 25px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #eee;
+            cursor: pointer; /* تظهر للمستخدم أنها قابلة للضغط */
+        }
+        .card:hover { transform: translateY(-10px); box-shadow: 0 15px 35px rgba(0,0,0,0.1); border-color: #1e3c72; }
+
+        .score-badge { position: absolute; top: 20px; left: 20px; background: #f1c40f; color: #333; padding: 5px 15px; border-radius: 12px; font-weight: bold; font-size: 14px; }
+        .status-tag { display: inline-block; padding: 5px 12px; border-radius: 10px; font-size: 12px; font-weight: bold; color: white; margin-bottom: 15px; }
+        .tag-approved { background: #2ecc71; }
+        .tag-incubated { background: #9b59b6; animation: pulse 2s infinite; }
+
+        h3 { color: #1e3c72; margin: 10px 0; font-size: 22px; }
+        .desc { color: #666; font-size: 15px; line-height: 1.6; min-height: 80px; }
+        .footer-card { border-top: 1px solid #eee; margin-top: 20px; padding-top: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .owner { font-weight: bold; color: #444; font-size: 14px; }
+
+        .btn-invest { background: #1e3c72; color: white; padding: 10px 20px; border-radius: 12px; text-decoration: none; font-size: 12px; font-weight: bold; transition: 0.3s; }
+        .btn-invest:hover { background: #27ae60; }
+
+        .view-more { display: block; text-align: center; color: #1e3c72; font-size: 12px; margin-top: 10px; text-decoration: underline; }
+
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <div class="hero">
+        <img src="/static/kitab_logo.png" class="logo">
+        <h1>سوق الابتكار والاستثمار الرقمي 🚀</h1>
+        <p>بوابة جامعة الكتاب لعرض النماذج الصناعية والحلول التقنية الجاهزة للتسويق</p>
+        <div style="margin-top: 20px;">
+            <span style="background: rgba(255,255,255,0.2); padding: 8px 20px; border-radius: 50px;">إجمالي الابتكارات المعتمدة: {{ stats.total_featured }}</span>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="grid">
+            {% for p in projects %}
+            <!-- التعديل هنا: البطاقة بالكامل تفتح صفحة المشروع عند الضغط -->
+            <div class="card" onclick="location.href='/project/{{ p.id }}'">
+                <div class="score-badge">⭐ {{ p.score }}/10</div>
+
+                <span class="status-tag {% if p.status == 'approved' %}tag-approved{% else %}tag-incubated{% endif %}">
+                    {% if p.status == 'approved' %}✅ مشروع معتمد{% else %}🚀 في الحاضنة{% endif %}
+                </span>
+
+                <h3>{{ p.innov_type or 'ابتكار تقني' }}</h3>
+                <p style="color: #888; font-size: 13px;">المسار: {{ p.sector }} | المرحلة: {{ p.project_stage }}</p>
+                <div class="desc">{{ p.description[:180] }}{% if p.description|length > 180 %}...{% endif %}</div>
+
+                <span class="view-more">اضغط لرؤية التفاصيل والهوية الرقمية للابتكار</span>
+
+                <div class="footer-card">
+                    <div class="owner">بإشراف: {{ p.name }}</div>
+                    <!-- التعديل هنا: منع انتقال الضغط للبطاقة عند الضغط على زر الواتساب فقط -->
+                    <a href="https://wa.me/{{ p.contact_value }}" class="btn-invest" onclick="event.stopPropagation();" target="_blank">طلب استثمار 💬</a>
+                </div>
+            </div>
+            {% else %}
+            <div style="text-align: center; grid-column: 1 / -1; padding: 50px; color: #888;">
+                <h2>قريباً.. سيتم عرض أولى الابتكارات المعتمدة هنا</h2>
+                <p>يتم حالياً تقييم المشاريع من قبل اللجنة العلمية</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <center style="margin-bottom: 40px;">
+        <a href="/" style="color: #1e3c72; text-decoration: none; font-weight: bold;">← العودة للمنصة الرئيسية</a>
+    </center>
+
+</body>
+</html>

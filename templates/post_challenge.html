@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>نشر تحدي صناعي - جامعة الكتاب</title>
+    <style>
+        body { font-family: 'Segoe UI'; background: linear-gradient(135deg, #1e3c72, #2a5298); color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .form-card { background: white; color: #333; padding: 40px; border-radius: 25px; width: 500px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); }
+        h2 { color: #1e3c72; text-align: center; }
+        input, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #eee; border-radius: 12px; box-sizing: border-box; }
+        button { background: #e74c3c; color: white; padding: 15px; width: 100%; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 16px; }
+    </style>
+</head>
+<body>
+    <div class="form-card">
+        <center><img src="/static/kitab_logo.png" width="80"></center>
+        <h2>نشر تحدي تقني/صناعي 🎯</h2>
+        <p style="text-align: center; font-size: 14px; color: #666;">أصحاب الشركات والمصانع: اطرحوا مشاكلكم التقنية ليجد لها مبتكرو الجامعة حلولاً ذكية.</p>
+
+        <form method="POST">
+            <input type="text" name="company_name" placeholder="اسم الشركة أو المصنع" required>
+            <input type="text" name="problem_title" placeholder="عنوان التحدي (مثلاً: هدر الطاقة في التبريد)" required>
+            <textarea name="problem_description" rows="5" placeholder="شرح مفصل للمشكلة التقنية..." required></textarea>
+            <input type="text" name="reward" placeholder="المكافأة المقترحة (جائزة مالية، عقد عمل، إلخ)" required>
+            <button type="submit">نشر التحدي في ركن الصناعة 🚀</button>
+        </form>
+        <center style="margin-top: 15px;"><a href="/challenges" style="color: #1e3c72; text-decoration: none; font-size: 13px;">← العودة للمعرض</a></center>
+    </div>
+</body>
+</html>

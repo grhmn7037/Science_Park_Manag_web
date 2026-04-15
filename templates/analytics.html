@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>التحليل الاستراتيجي | ECHO System</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root { --primary: #1e3c72; --gold: #f1c40f; --bg: #f4f7f6; }
+        body { font-family: 'Segoe UI', Tahoma; background: var(--bg); margin: 0; padding: 20px; }
+
+        .header { background: var(--primary); color: white; padding: 30px; border-radius: 20px; text-align: center; margin-bottom: 30px; position: relative; }
+        .btn-print { position: absolute; left: 20px; top: 20px; background: var(--gold); border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; }
+
+        /* بطاقات الـ KPI */
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .kpi-card { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); text-align: center; border-top: 5px solid var(--primary); }
+        .kpi-card h3 { margin: 0; color: #777; font-size: 14px; }
+        .kpi-card p { font-size: 35px; font-weight: bold; margin: 10px 0; color: var(--primary); }
+
+        /* منطقة الرسوم البيانية */
+        .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .chart-box { background: white; padding: 30px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .chart-title { font-size: 18px; font-weight: bold; color: var(--primary); margin-bottom: 20px; border-right: 5px solid var(--gold); padding-right: 15px; }
+
+        @media print { .btn-print, .header p { display: none; } body { padding: 0; } .chart-box { box-shadow: none; border: 1px solid #eee; } }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <button class="btn-print" onclick="window.print()">طباعة التقرير الاستراتيجي 📄</button>
+        <img src="/static/kitab_logo.png" width="80" style="background:white; border-radius:10px; padding:5px;">
+        <h1>لوحة قيادة النظام البيئي (ECHO Analytics)</h1>
+        <p>مؤشرات الأداء لـ "حدائق العلوم والتكنولوجيا" - جامعة الكتاب</p>
+    </div>
+
+    <!-- بطاقات الأداء الرئيسية -->
+    <div class="kpi-grid">
+        <div class="kpi-card"><h3>إجمالي المسجلين</h3><p>{{ total }}</p></div>
+        <div class="kpi-card"><h3>مشاريع معتمدة</h3><p>{{ approved }}</p></div>
+        <div class="kpi-card"><h3>في الحاضنة</h3><p>{{ incubated }}</p></div>
+        <div class="kpi-card"><h3>جودة الابتكار (متوسط)</h3><p>{{ avg }}/10</p></div>
+    </div>
+
+    <div class="charts-grid">
+        <!-- الرسم الأول: توزيع القطاعات -->
+        <div class="chart-box">
+            <div class="chart-title">توزيع الابتكارات حسب المسار العلمي</div>
+            <canvas id="sectorChart"></canvas>
+        </div>
+
+        <!-- الرسم الثاني: كفاءة النظام (تحويل الأفكار) -->
+        <div class="chart-box">
+            <div class="chart-title">مؤشر نضج المشاريع (Pipeline)</div>
+            <canvas id="pipelineChart"></canvas>
+        </div>
+
+        <!-- الرسم الثالث: مصادر الابتكار -->
+        <div class="chart-box">
+            <div class="chart-title">مصادر الابتكار (طلاب - تدريسيين - شركات)</div>
+            <canvas id="roleChart"></canvas>
+        </div>
+
+        <!-- الرسم الرابع: معدل الإنجاز -->
+        <div class="chart-box">
+            <div class="chart-title">معدل الاعتماد الاستثماري</div>
+            <div style="text-align: center; margin-top: 20px;">
+                <h2 style="font-size: 60px; color: var(--gold);">{{ ((approved / total) * 100)|round(1) }}%</h2>
+                <p style="color: #888;">من إجمالي الأفكار وصلت لمرحلة "الاعتماد"</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // الرسم الأول: القطاعات
+        new Chart(document.getElementById('sectorChart'), {
+            type: 'pie',
+            data: {
+                labels: ['أفكار', 'مشكلات تقنية', 'مشاريع جاهزة', 'فرص عمل'],
+                datasets: [{
+                    data: [{{ sectors.idea }}, {{ sectors.problem }}, {{ sectors.real_project }}, {{ sectors.job }}],
+                    backgroundColor: ['#1e3c72', '#f1c40f', '#27ae60', '#e74c3c']
+                }]
+            }
+        });
+
+        // الرسم الثاني: Pipeline
+        new Chart(document.getElementById('pipelineChart'), {
+            type: 'bar',
+            data: {
+                labels: ['قيد الانتظار', 'معتمد استثمارياً', 'داخل الحاضنة'],
+                datasets: [{
+                    label: 'عدد المشاريع',
+                    data: [{{ pending }}, {{ approved }}, {{ incubated }}],
+                    backgroundColor: '#1e3c72'
+                }]
+            },
+            options: { scales: { y: { beginAtZero: true } } }
+        });
+
+        // الرسم الثالث: الأدوار
+        new Chart(document.getElementById('roleChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['طلاب', 'تدريسيين', 'شركات'],
+                datasets: [{
+                    data: [{{ roles.student }}, {{ roles.staff }}, {{ roles.company }}],
+                    backgroundColor: ['#3498db', '#9b59b6', '#34495e']
+                }]
+            }
+        });
+    </script>
+</body>
+</html>

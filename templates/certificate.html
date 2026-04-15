@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>شهادة ابتكار معتمدة - {{ p.name }}</title>
+    <style>
+        body { background: #555; display: flex; justify-content: center; padding: 50px 0; }
+        .certificate-container {
+            width: 800px; height: 550px; background: white; padding: 40px;
+            position: relative; border: 15px solid #1e3c72; box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            background-image: url('https://www.transparenttextures.com/patterns/white-paper.png'); /* خلفية ورقية */
+        }
+        .inner-border { border: 2px solid #f1c40f; height: 100%; padding: 20px; box-sizing: border-box; text-align: center; }
+        .header { display: flex; justify-content: space-between; align-items: center; }
+        .uni-name { font-size: 20px; font-weight: bold; color: #1e3c72; }
+
+        h1 { font-size: 45px; color: #1e3c72; margin: 20px 0; font-family: 'Times New Roman', serif; }
+        .certify-text { font-size: 22px; color: #333; }
+        .student-name { font-size: 32px; font-weight: bold; color: #c0392b; border-bottom: 2px solid #eee; display: inline-block; padding: 0 30px; }
+        .project-title { font-size: 24px; font-weight: bold; color: #1e3c72; margin-top: 15px; }
+
+        .footer { margin-top: 50px; display: flex; justify-content: space-between; align-items: flex-end; }
+        .signature { text-align: center; border-top: 2px solid #333; width: 200px; padding-top: 5px; }
+        .verify-qr { width: 80px; height: 80px; background: #eee; }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .certificate-container { box-shadow: none; border: 15px solid #1e3c72 !important; }
+            .btn-print { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="certificate-container">
+        <div class="inner-border">
+            <div class="header">
+                <div class="uni-name">جامعة الكتاب<br>حدائق العلوم والتكنولوجيا</div>
+                <img src="/static/kitab_logo.png" width="80">
+                <div class="uni-name">AL-KITAB UNIVERSITY<br>Science & Tech Parks</div>
+            </div>
+
+            <h1>شهادة اعتماد ابتكار</h1>
+            <p class="certify-text">تشهد إدارة حدائق العلوم والتكنولوجيا بأن المبتكر:</p>
+            <div class="student-name">{{ p.name }}</div>
+            <p class="certify-text">قد نجح في تطوير الابتكار الموسوم بـ:</p>
+            <div class="project-title">" {{ p.innov_type }} "</div>
+            <p style="font-size: 16px;">بتقييم علمي وقدره ( {{ p.score }}/10 ) وتم اعتماده في المسار الرقمي للجامعة.</p>
+
+            <div class="footer">
+                <div style="text-align: right; font-size: 14px;">
+                    رمز التحقق: #UK-{{ p.id }}<br>
+                    تاريخ الإصدار: {{ date }}
+                </div>
+
+                <div class="signature">
+                    مدير حدائق العلوم<br>د. غالب هه ورامي
+                </div>
+            </div>
+
+            <button class="btn-print" onclick="window.print()" style="margin-top: 20px; padding: 10px 20px; background: #27ae60; color: white; border: none; cursor: pointer; border-radius: 5px;">طباعة أو حفظ بصيغة PDF</button>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!-- templates/reviewer_admin.html -->
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>لوحة التقييم - {{ role }}</title>
+    <style>
+        body { font-family: 'Segoe UI'; background: #f4f7f6; padding: 20px; }
+        .header { background: #2c3e50; color: white; padding: 20px; border-radius: 15px; text-align: center; }
+        table { width: 100%; background: white; border-collapse: collapse; border-radius: 15px; overflow: hidden; margin-top: 20px; }
+        th, td { padding: 15px; text-align: right; border-bottom: 1px solid #eee; }
+        .input-score { width: 50px; padding: 5px; border-radius: 5px; border: 1px solid #ccc; }
+        .notes-area { width: 100%; border: 1px solid #eee; border-radius: 5px; padding: 5px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>أهلاً بك يا سيادة الـ {{ role }}</h2>
+        <p>لديك صلاحية التقييم العلمي وإضافة الملاحظات الفنية للمشاريع</p>
+        <a href="/admin_logout" style="color: #f1c40f; text-decoration: none;">تسجيل الخروج</a>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>اسم المبتكر</th>
+                <th>وصف الابتكار</th>
+                <th>التقييم العلمي (10)</th>
+                <th>توصية الخبير (ملاحظات)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in entries %}
+            <tr>
+                <td><b>{{ entry.name }}</b></td>
+                <td style="font-size: 13px;">{{ entry.description }}</td>
+                <td>
+                    <!-- المقيم يحدث التقييم باستخدام نفس دالة التحديث التي برمجناها -->
+                    <input type="number" value="{{ entry.score }}" class="input-score"
+                           onchange="updateField('{{ entry.id }}', 'score', this.value)">
+                </td>
+                <td>
+                    <textarea class="notes-area" onblur="updateField('{{ entry.id }}', 'internal_notes', this.value)">{{ entry.internal_notes }}</textarea>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        function updateField(id, field, value) {
+            fetch(`/update_entry/${id}`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({[field]: value})
+            }).then(res => res.json()).then(data => {
+                if(data.success) console.log("تم حفظ تقييم الخبير");
+            });
+        }
+    </script>
+</body>
+</html>
